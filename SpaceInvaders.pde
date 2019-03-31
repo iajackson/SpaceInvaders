@@ -1,9 +1,9 @@
-//TODO: Implement hit detection of aliens
-//TODO: Make aliens move
-//TODO: implement mousePressed() for shooting
-//TODO: use sin wave to oscillate alien movement
-//TODO: Update to use PVector arrays
 //TODO: Update draw functions to use centre mode
+//TODO: implement scoring
+//TODO: add more alien rows
+//TODO: add endgame conditions
+//TODO: add sound effects
+//TODO: update draw functions to accept PVector
 
 PVector[] pBullets = new PVector[0];
 PVector[] pAliens = new PVector[0];
@@ -25,10 +25,7 @@ void draw() {
   // Draw laser on mouseX
   laser(mouseX, 380);
   checkCollision();
-  //Collision detection
-  //Update score
-  //Check gameover
-  // Fire laser if mouse clicked
+  // Check gameover
   // Draw and move bullets
   for (int i=0; i<pBullets.length; i++){
     if (pBullets[i].y > 0){
@@ -40,30 +37,26 @@ void draw() {
   for (int i = 0; i < pAliens.length; i++){
     alien(pAliens[i].x, pAliens[i].y);
     if (sin(radians(theta)) > 0) {
-      if (theta % 360 == 0) {
-        pAliens[i].add(new PVector(2, 20));
+      if (theta % 540 == 0) {
+        pAliens[i].add(new PVector(0, 20));
       } else {
         pAliens[i].add(new PVector(2, 0));
       }
     } else {
-      if (theta % 360 == 0) {
-        pAliens[i].add(new PVector(-2, 20));
+      if (theta % 540 == 0) {
+        pAliens[i].add(new PVector(0, 20));
       } else {
         pAliens[i].add(new PVector(-2, 0));
       }
     }
   }
-  theta += 10;
-  // Determine alien direction
-  if (pAliens[0].x < 100) {
-    aliensRight = true;
-  } else if (pAliens[pAliens.length-1].x > 500) {
-    aliensRight = false;
-  } //<>//
+  theta += 10; //<>//
 }
 
 
-
+/*
+  Draws an alien at the provided x, y coords
+*/
 void alien(float x, float y){
   noStroke();
   fill(255);
@@ -80,6 +73,9 @@ void alien(float x, float y){
   //point(x,y);
 }
 
+/*
+  Draws a laser at the provided x, y coords
+*/
 void laser(float x, float y){
   noStroke();
   fill(255);
@@ -93,6 +89,9 @@ void laser(float x, float y){
   //point(x,y);
 }
 
+/*
+  Draws a bullet at the provided x, y coords
+*/
 void bullet(float x, float y){
   noStroke();
   fill(255);
@@ -103,16 +102,22 @@ void bullet(float x, float y){
   //point(x,y);
 }
 
+/*
+  Fires a bullet
+*/
 void mousePressed(){
   pBullets = (PVector[])append(pBullets, new PVector(mouseX, 380)); //<>//
 }
 
+/*
+  Check if any bullets have hit aliens
+*/
 void checkCollision() {
   for (int i=0; i < pBullets.length; i++) {
     for (int j=0; j < pAliens.length; j++) {
       if ((abs(pBullets[i].x - pAliens[j].x) <= 10) && (abs(pBullets[i].y - pAliens[j].y) <= 10)) {
         pAliens[j] = new PVector(2000, 0);
-        // Increase score
+        // TODO: Increase score
       }
     }
   }
