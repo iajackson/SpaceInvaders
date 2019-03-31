@@ -4,26 +4,19 @@
 //TODO: use sin wave to oscillate alien movement
 //TODO: Update to use PVector arrays
 //TODO: Update draw functions to use centre mode
-//int[] bulletX = {0};
-//int[] bulletY = {0};
 
-IntList bulletX;
-IntList bulletY;
-IntList alienX;
-IntList alienY;
+PVector[] pBullets = new PVector[0];
+PVector[] pAliens = new PVector[0];
+
 boolean aliensRight = true;
+float theta = 0.0;
 
 void setup() {
   size(600, 400);
   background(0);
   noStroke();
-  bulletX = new IntList();
-  bulletY = new IntList();
-  alienX = new IntList();
-  alienY = new IntList();
   for(int i=100; i<500;i+=50){
-    alienX.append(i);
-    alienY.append(40);
+    pAliens = (PVector[])append(pAliens, new PVector(i, 40));
   }
 }
 
@@ -31,33 +24,40 @@ void draw() {
   background(0);
   // Draw laser on mouseX
   laser(mouseX, 380);
+  checkCollision();
   //Collision detection
   //Update score
   //Check gameover
   // Fire laser if mouse clicked
   // Draw and move bullets
-  for (int i=0; i<bulletX.size(); i++){
-    if (bulletY.get(i) > 0){
-      bullet(bulletX.get(i), bulletY.get(i));
-      bulletY.sub(i, 10);
-    } else {
-      bulletX.remove(i);
-      bulletY.remove(i);
+  for (int i=0; i<pBullets.length; i++){
+    if (pBullets[i].y > 0){
+      bullet(pBullets[i].x, pBullets[i].y);
+      pBullets[i].sub(new PVector(0, 10));
     }
   }
   // Draw and move aliens
-  for (int i=0; i<alienX.size(); i++){
-    alien(alienX.get(i), alienY.get(i));
-    if (aliensRight){
-      alienX.add(i,2);
+  for (int i = 0; i < pAliens.length; i++){
+    alien(pAliens[i].x, pAliens[i].y);
+    if (sin(radians(theta)) > 0) {
+      if (theta % 360 == 0) {
+        pAliens[i].add(new PVector(2, 20));
+      } else {
+        pAliens[i].add(new PVector(2, 0));
+      }
     } else {
-      alienX.sub(i,2);
+      if (theta % 360 == 0) {
+        pAliens[i].add(new PVector(-2, 20));
+      } else {
+        pAliens[i].add(new PVector(-2, 0));
+      }
     }
   }
+  theta += 10;
   // Determine alien direction
-  if (alienX.get(0) < 100) {
+  if (pAliens[0].x < 100) {
     aliensRight = true;
-  } else if (alienX.get(alienX.size()-1) > 500) {
+  } else if (pAliens[pAliens.length-1].x > 500) {
     aliensRight = false;
   } //<>//
 }
@@ -104,6 +104,16 @@ void bullet(float x, float y){
 }
 
 void mousePressed(){
-  bulletX.append(mouseX);
-  bulletY.append(380);
+  pBullets = (PVector[])append(pBullets, new PVector(mouseX, 380)); //<>//
+}
+
+void checkCollision() {
+  for (int i=0; i < pBullets.length; i++) {
+    for (int j=0; j < pAliens.length; j++) {
+      if ((abs(pBullets[i].x - pAliens[j].x) <= 10) && (abs(pBullets[i].y - pAliens[j].y) <= 10)) {
+        pAliens[j] = new PVector(2000, 0);
+        // Increase score
+      }
+    }
+  }
 }
