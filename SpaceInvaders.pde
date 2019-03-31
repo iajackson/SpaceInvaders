@@ -2,6 +2,8 @@
 //TODO: Make aliens move
 //TODO: implement mousePressed() for shooting
 //TODO: use sin wave to oscillate alien movement
+//TODO: Update to use PVector arrays
+//TODO: Update draw functions to use centre mode
 //int[] bulletX = {0};
 //int[] bulletY = {0};
 
@@ -61,7 +63,7 @@ void draw() {
 }
 
 
-//TODO: Update draw functions to use centre
+
 void alien(float x, float y){
   noStroke();
   fill(255);
